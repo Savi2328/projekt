@@ -38,6 +38,21 @@ class Wydatek(models.Model):
         )
 
 
+class Kategoria(models.Model):
+    NAZWY_KATEGORIA= [
+        ('oplaty_stale', 'Opłaty stałe'),
+        ('jedzenie', 'Jedzenie'),
+        ('przyjemnosci', 'Przyjemności'),
+        ('rozwoj', 'Rozwój'),
+        ('inwestycje', 'Inwestycje'),
+        ('inne', 'Inne'),
+    ]
+    slug = models.CharField(max_length=30, choices=NAZWY_KATEGORIA, unique=True)
+    nazwa = models.CharField(max_length=100)
+
+    ICON_MAP = {
+        'oplaty_stale: bi bi-cash-stack',
+    }
 
 
 
