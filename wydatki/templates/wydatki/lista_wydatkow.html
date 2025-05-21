@@ -1,0 +1,19 @@
+{% extends 'wydatki/base.html' %}
+{% block content %}
+  {% for wydatek in wydatki %}
+    <div class="wydatek mb-3">
+      <h2>
+        <a href="{% url 'wydatek_edycja' wydatek.pk %}">
+          {{ wydatek.wydatek_nazwa }}
+        </a>
+      </h2>
+      <p>{{ wydatek }}</p>
+
+      {% if wydatek.image %}
+        <img src="{{ wydatek.image.url }}" alt="" width="100">
+      {% endif %}
+    </div>
+  {% empty %}
+    <p>Brak wydatków.</p>
+  {% endfor %}
+{% endblock %}

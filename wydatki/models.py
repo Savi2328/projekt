@@ -5,12 +5,15 @@ class Wydatek(models.Model):
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     wydatek_nazwa = models.CharField(
         "Nazwa wydatku",
-        max_length=200
+        max_length=200,
+        default=''
     )
     wydatek_kwota = models.DecimalField(
-        "Kwota",
+        "Kwota wydatku",
         max_digits=8,
-        decimal_places=2)
+        decimal_places=2,
+        default=0
+    )
     wydatek_rodzaj = models.CharField(
         "Rodzaj wydatku",
         max_length=100,
@@ -22,13 +25,16 @@ class Wydatek(models.Model):
         default=timezone.now
     )
 
+    #SK
+    image = models.ImageField(null=True, blank=True, upload_to='images/')
+
 
     def __str__(self):
         return (
             f"{self.wydatek_nazwa}"
             f"({self.wydatek_rodzaj or 'brak'}) -"
             f"{self.wydatek_kwota} zł "
-            f"({self.wydatek_data}"
+            f"({self.wydatek_data})"
         )
 
 

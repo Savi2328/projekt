@@ -1,0 +1,21 @@
+{% extends 'wydatki/base.html' %}
+{% block content %}
+  <div class="wydatek-detail">
+    {% if wydatek.wydatek_data %}
+      <div class="date">
+        {{ wydatek.wydatek_data|date:"Y-m-d H:i" }}
+      </div>
+    {% endif %}
+    <a class="btn btn-default" href="{% url 'wydatek_edycja' pk=wydatek.pk %}"><i class="bi bi-pencil"></i></a>
+    <h2>{{ wydatek.wydatek_nazwa }}</h2>
+    <p>Koszt: {{ wydatek.wydatek_kwota }} zł</p>
+    <p>Rodzaj: {{ wydatek.wydatek_rodzaj|default:"brak" }}</p>
+
+    {# także tu: #}
+    {% if wydatek.image %}
+      <img src="{{ wydatek.image.url }}" alt="Obrazek" width="250">
+    {% else %}
+      <p>Brak załączonego obrazka.</p>
+    {% endif %}
+  </div>
+{% endblock %}

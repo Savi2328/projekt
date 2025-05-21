@@ -1,0 +1,9 @@
+{% extends 'wydatki/base.html' %}
+
+{% block content %}
+<h2>Nowy wydatek</h2>
+<form method="post" class="wydatek-form">{% csrf_token %}
+{{ form.as_p }}
+  <button type="submit" class="save btn btn-default">Zapisz</button>
+</form>
+{% endblock %}
