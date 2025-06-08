@@ -1,19 +1,90 @@
 {% extends 'wydatki/base.html' %}
-{% block content %}
-  {% for wydatek in wydatki %}
-    <div class="wydatek mb-3">
-      <h2>
-        <a href="{% url 'wydatek_edycja' wydatek.pk %}">
-          {{ wydatek.wydatek_nazwa }}
-        </a>
-      </h2>
-      <p>{{ wydatek }}</p>
 
-      {% if wydatek.image %}
-        <img src="{{ wydatek.image.url }}" alt="" width="100">
-      {% endif %}
+{% block content %}
+  <div class="mt-4">
+
+    <!-- 1) FORMULARZ FILTROWANIA (metoda GET) -->
+    <form method="get" class="mb-4">
+      <h5>Filtruj po kategoriach:</h5>
+      <div class="row">
+        {% for kat in wszystkie_kategorie %}
+          <div class="col-auto form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="kategorie"
+              id="kat_{{ kat.slug }}"
+              value="{{ kat.slug }}"
+              {% if kat.slug in wybrane_slugi %}checked{% endif %}
+            >
+            <label class="form-check-label" for="kat_{{ kat.slug }}">
+              <i class="{{ kat.ikona }} me-1"></i> {{ kat.nazwa }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm mt-2">
+        Zastosuj filtr
+      </button>
+
+    </form>
+
+    <h4>Ostatnie wydatki:</h4>
+    <ul class="list-group mb-4">
+      {% for w in wydatki %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <a href="{% url 'wydatek_szczegoly' w.pk %}" class="fw-semibold">
+              {{ w.wydatek_nazwa }}
+            </a>
+            <div class="text-muted small">
+              {{ w.wydatek_data|date:"Y-m-d" }}
+            </div>
+          </div>
+          <span>{{ w.wydatek_kwota }} zł</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">Brak wydatków do wyświetlenia.</li>
+      {% endfor %}
+    </ul>
+
+
+    <h4>Miesiące</h4>
+    <ul class="list-group mb-4">
+      {% for p in podsumowania %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="{% url 'podsumowanie_miesiaca' rok=p.miesiac.year miesiac=p.miesiac.month %}">
+            {{ p.miesiac|date:"F Y" }}
+          </a>
+          <span>{{ p.suma }} zł</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">Brak danych miesięcznych.</li>
+      {% endfor %}
+    </ul>
+
+    <div class="mb-5">
+      <h5>Wydatki w czasie:</h5>
+      <canvas id="sumaChart" width="400" height="200"></canvas>
     </div>
-  {% empty %}
-    <p>Brak wydatków.</p>
-  {% endfor %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('sumaChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: {{ chart_labels|safe }},
+          datasets: [{
+            label: 'Wydatki (zł)',
+            data: {{ chart_data|safe }},
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    </script>
+
+  </div>
 {% endblock %}

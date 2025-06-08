@@ -1,21 +1,47 @@
 {% extends 'wydatki/base.html' %}
+
 {% block content %}
-  <div class="wydatek-detail">
+  <div class="wydatek-detail mt-4">
+
+    {# 1. DATA BEZ GODZINY #}
     {% if wydatek.wydatek_data %}
-      <div class="date">
-        {{ wydatek.wydatek_data|date:"Y-m-d H:i" }}
+      <div class="text-muted mb-2">
+        {{ wydatek.wydatek_data|date:"Y-m-d" }}  {# np. 2025-06-10 #}
       </div>
     {% endif %}
-    <a class="btn btn-default" href="{% url 'wydatek_edycja' pk=wydatek.pk %}"><i class="bi bi-pencil"></i></a>
-    <h2>{{ wydatek.wydatek_nazwa }}</h2>
-    <p>Koszt: {{ wydatek.wydatek_kwota }} zł</p>
-    <p>Rodzaj: {{ wydatek.wydatek_rodzaj|default:"brak" }}</p>
 
-    {# także tu: #}
+    {# 2. PRZYCISK EDYCJI #}
+    <div class="mb-3">
+      <a href="{% url 'wydatek_edycja' wydatek.pk %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-pencil-fill me-1"></i> Edytuj wydatek
+      </a>
+    </div>
+
+    {# 3. NAZWA WYDATKU #}
+    <h2 class="fw-bold">{{ wydatek.wydatek_nazwa }}</h2>
+
+    {# 4. KOSZT #}
+    <p class="mb-1"><strong>Koszt:</strong> {{ wydatek.wydatek_kwota }} zł</p>
+
+    {# 5. RODZAJ Z IKONĄ #}
+    <p class="mb-3">
+      <strong>Rodzaj:</strong>
+      {% if wydatek.wydatek_rodzaj %}
+        <i class="{{ wydatek.wydatek_rodzaj.ikona }} me-1"></i>
+        {{ wydatek.wydatek_rodzaj.nazwa }}
+      {% else %}
+        <i class="bi bi-question-circle me-1"></i> brak
+      {% endif %}
+    </p>
+
+    {# 6. OBRAZEK (JEŚLI JEST) #}
     {% if wydatek.image %}
-      <img src="{{ wydatek.image.url }}" alt="Obrazek" width="250">
+      <div class="mb-3">
+        <img src="{{ wydatek.image.url }}" alt="Obrazek" class="img-fluid rounded" style="max-width:300px;">
+      </div>
     {% else %}
-      <p>Brak załączonego obrazka.</p>
+      <p class="text-muted">Brak załączonego obrazka.</p>
     {% endif %}
+
   </div>
 {% endblock %}

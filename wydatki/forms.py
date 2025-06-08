@@ -8,3 +8,12 @@ class WydatekForm(forms.ModelForm):
     class Meta:
         model = Wydatek
         fields = ['wydatek_nazwa','wydatek_kwota','wydatek_rodzaj','wydatek_data']
+
+        widgets = {
+            'wydatek_data':forms.DateInput(
+                attrs={
+                    'type':'date',
+                    'class':'form-control'
+                }
+            )
+        }
