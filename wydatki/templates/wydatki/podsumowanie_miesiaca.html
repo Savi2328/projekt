@@ -1,0 +1,98 @@
+{% extends 'wydatki/base.html' %}
+
+{% block content %}
+  <div class="mt-4">
+
+    <form method="get" class="mb-4">
+      <h4>Filtruj wydatki w {{ miesiac|date:"F Y" }}:</h4>
+      <div class="row g-2">
+        {% for kat in wszystkie_kategorie %}
+          <div class="col-auto form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="kategorie"
+              id="kat_{{ kat.slug }}"
+              value="{{ kat.slug }}"
+              {% if kat.slug in wybrane_slugi %}checked{% endif %}
+            >
+            <label class="form-check-label" for="kat_{{ kat.slug }}">
+              <i class="{{ kat.ikona }} me-1"></i> {{ kat.nazwa }}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="mt-2">
+        <button type="submit" class="btn btn-primary btn-sm">
+          Zastosuj filtr
+        </button>
+        <a href="{% url 'podsumowanie_miesiaca' rok=miesiac.year miesiac=miesiac.month %}" class="btn btn-link btn-sm">
+          Wyczyść filtr
+        </a>
+      </div>
+    </form>
+
+    <h2>Podsumowanie: {{ miesiac|date:"F Y" }}</h2>
+    <p class="lead">Suma wydatków: <strong>{{ suma }} zł</strong></p>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Nazwa</th>
+          <th>Kategoria</th>
+          <th class="text-end">Kwota</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in wydatki %}
+          <tr>
+            <td>{{ w.wydatek_data|date:"Y-m-d" }}</td>
+            <td>{{ w.wydatek_nazwa }}</td>
+            <td>
+              {% if w.wydatek_rodzaj %}
+                <i class="{{ w.wydatek_rodzaj.ikona }} me-1"></i>
+                {{ w.wydatek_rodzaj.nazwa }}
+              {% else %}
+                <i class="bi bi-question-circle me-1"></i> brak
+              {% endif %}
+            </td>
+            <td class="text-end">{{ w.wydatek_kwota }} zł</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center text-muted">
+              Brak wydatków do wyświetlenia w tej kategorii/miesiącu.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="mt-5">
+      <h4>Rozkład wydatków wg kategorii</h4>
+      <canvas id="pieChart" width="400" height="400"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const pieCtx = document.getElementById('pieChart').getContext('2d');
+      new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+          labels: {{ chart_labels_pie|safe }},
+          datasets: [{
+            data: {{ chart_data_pie|safe }},
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          responsive: true,
+        }
+      });
+    </script>
+
+  </div>
+{% endblock %}
