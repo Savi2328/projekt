@@ -21,4 +21,4 @@ w terminalu PyCharm wpisać:
 4)"python manage.py createsuperuser" -> Tu podajemy nazwe, email oraz 2x haslo [np. u mnie "admin", "a@a.pl","haslo123"
 5)”python manage.py runserver” -> Uruchomienie serwera deweloperskiego
 6)Zalogowanie w http://127.0.0.1:8000/admin/
-7) Już można dodać nowy rekord
+7) Już można dodać nowy rekord http://127.0.0.1:8000/
